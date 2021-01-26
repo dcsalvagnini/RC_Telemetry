@@ -1,8 +1,10 @@
+#include <SPI.h>
+#include <SD.h>
 #include "SoftwareSerial.h"
 #include "TinyGPS.h"
 #include <SparkFun_ADXL345.h>
 
-SoftwareSerial gpsSerial(10,11);
+//SoftwareSerial gpsSerial(19, 18);
 TinyGPS gps;
 
 long lat, lon;
@@ -12,7 +14,7 @@ void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(19200);
-  gpsSerial.begin(9600); // connect gps sensor
+  Serial1.begin(9600); // connect gps sensor
 
   pinMode(led, OUTPUT);
 
@@ -25,11 +27,11 @@ void loop() {
   blink(led, 1000);
   
   
-  Serial.println(gpsSerial.available());
-  Serial.println(gpsSerial.read());
-  Serial.println(gps.encode(gpsSerial.read()));
+  Serial.println(Serial1.available());
+  Serial.println(Serial1.read());
+  Serial.println(gps.encode(Serial1.read()));
   
-  gps.encode(gpsSerial.read());
+  gps.encode(Serial1.read());
 
   gps.get_position(&lat,&lon); // get latitude and longitude
   // display position
@@ -38,11 +40,11 @@ void loop() {
   Serial.print("lat: ");Serial.print(lat);Serial.print(" ");// print latitude
   Serial.print("lon: ");Serial.println(lon); // print longitude
   
-  while(gpsSerial.available() > 0){ // check for gps data
+  while(Serial1.available() > 0){ // check for gps data
 
     digitalWrite(led, HIGH);
 
-    if(gps.encode(gpsSerial.read())){ // encode gps data
+    if(gps.encode(Serial1.read())){ // encode gps data
       gps.get_position(&lat,&lon); // get latitude and longitude
       // display position
       
